@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 输出控制，格式控制 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{HH:mm:ss} [%-5level] [%thread] %logger{17} - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 系统模块日志级别控制  -->
+    <logger name="netty" level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    <logger name="io.netty.handler.logging.LoggingHandler" level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+<!--    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--        &lt;!&ndash;日志文件名称&ndash;&gt;-->
+<!--        <file>logFile.log</file>-->
+<!--        &lt;!&ndash; 循环政策：基于时间创建日志文件 &ndash;&gt;-->
+<!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+<!--            &lt;!&ndash; 日志文件名格式 &ndash;&gt;-->
+<!--            <fileNamePattern>logFile.%d{yyyy-MM-dd}.log</fileNamePattern>-->
+<!--            &lt;!&ndash; 日志最大的历史 60天 &ndash;&gt;-->
+<!--            <maxHistory>15</maxHistory>-->
+<!--        </rollingPolicy>-->
+<!--        <encoder>-->
+<!--            <pattern>%date{HH:mm:ss} [%-5level] [%thread] $logger{17} - %m%n</pattern>-->
+<!--        </encoder>-->
+<!--    </appender>-->
+</configuration>
