@@ -14,13 +14,17 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.slf4j.Slf4j;
+import top.jiakaic.annotation.Service;
+import top.jiakaic.annotation.ServiceScan;
 import top.jiakaic.handler.RpcRequestMessageHandler;
 import top.jiakaic.protocol.MessageCodecSharable;
 import top.jiakaic.protocol.ProtocolFrameDecoder;
 import top.jiakaic.protocol.ServiceRegistry;
 import top.jiakaic.registry.ZookeeperRegistryCenter;
+import top.jiakaic.util.ReflectUtil;
 
 import java.net.InetSocketAddress;
+import java.util.Set;
 
 /**
  * @author JK
@@ -39,11 +43,56 @@ public class RpcServerManager {
         this.port = port;
         registry = new ServiceRegistry();
         registryCenter = new ZookeeperRegistryCenter();
+        scanServices();
     }
 
-    public void publishService(String serviceName,String serviceInstance) {
-        registry.putService(serviceName,serviceInstance);
+//    public void publishService(String serviceName,String serviceInstance) {
+//        registry.putService(serviceName,serviceInstance);
+//        registryCenter.register(serviceName, new InetSocketAddress(host, port));
+//    }
+    public <T> void publishService(T service, String serviceName){
+        registry.putService(service, serviceName);
         registryCenter.register(serviceName, new InetSocketAddress(host, port));
+    }
+    public void scanServices() {
+        String mainClassName = ReflectUtil.getStackTrace();
+        Class<?> startClass;
+        try {
+            startClass = Class.forName(mainClassName);
+            if(!startClass.isAnnotationPresent(ServiceScan.class)) {
+                log.error("启动类缺少 @ServiceScan 注解");
+                throw new RuntimeException("启动类缺少 @ServiceScan 注解");
+            }
+        } catch (ClassNotFoundException e) {
+            log.error("出现未知错误");
+            throw new RuntimeException("出现未知错误");
+        }
+        String basePackage = startClass.getAnnotation(ServiceScan.class).value();
+        if("".equals(basePackage)) {
+            String substring = mainClassName.substring(0, mainClassName.lastIndexOf("."));
+            basePackage = substring.substring(0,substring.lastIndexOf("."));
+        }
+        Set<Class<?>> classSet = ReflectUtil.getClasses(basePackage);
+        for(Class<?> clazz : classSet) {
+            if(clazz.isAnnotationPresent(Service.class)) {
+                String serviceName = clazz.getAnnotation(Service.class).name();
+                Object obj;
+                try {
+                    obj = clazz.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    log.error("创建 " + clazz + " 时有错误发生");
+                    continue;
+                }
+                if("".equals(serviceName)) {
+                    Class<?>[] interfaces = clazz.getInterfaces();
+                    for (Class<?> oneInterface: interfaces){
+                        publishService(obj, oneInterface.getCanonicalName());
+                    }
+                } else {
+                    publishService(obj, serviceName);
+                }
+            }
+        }
     }
 
     public void start() {

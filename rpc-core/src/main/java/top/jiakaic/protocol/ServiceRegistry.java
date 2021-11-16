@@ -18,11 +18,20 @@ public class ServiceRegistry {
         map = new ConcurrentHashMap<>();
     }
 
-    public static void putService(String serviceName, String serviceInstance) {
+//    public static void putService(String serviceName, String serviceInstance) {
+//        try {
+//            Class<?> interfaceClass = Class.forName(serviceName);
+//            Class<?> instanceClass = Class.forName(serviceInstance);
+//            map.put(interfaceClass, instanceClass.newInstance());
+//        } catch (Exception e) {
+//            log.debug("服务本地注册失败", e);
+//            throw new RuntimeException("服务本地注册失败");
+//        }
+//    }
+    public static <T> void putService(T service, String serviceName){
         try {
             Class<?> interfaceClass = Class.forName(serviceName);
-            Class<?> instanceClass = Class.forName(serviceInstance);
-            map.put(interfaceClass, instanceClass.newInstance());
+            map.put(interfaceClass, service);
         } catch (Exception e) {
             log.debug("服务本地注册失败", e);
             throw new RuntimeException("服务本地注册失败");
