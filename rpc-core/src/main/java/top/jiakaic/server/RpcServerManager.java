@@ -2,12 +2,18 @@ package top.jiakaic.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
+import lombok.extern.slf4j.Slf4j;
 import top.jiakaic.handler.RpcRequestMessageHandler;
 import top.jiakaic.protocol.MessageCodecSharable;
 import top.jiakaic.protocol.ProtocolFrameDecoder;
@@ -21,6 +27,7 @@ import java.net.InetSocketAddress;
  * @date 2021/11/9 -16:01
  * @Description
  **/
+@Slf4j
 public class RpcServerManager {
     private final String host;
     private final int port;
@@ -55,6 +62,17 @@ public class RpcServerManager {
                             ch.pipeline().addLast(new ProtocolFrameDecoder());
                             ch.pipeline().addLast(LOGGING_HANDLER);
                             ch.pipeline().addLast(CODEC);
+                            ch.pipeline().addLast(new IdleStateHandler(60*8,0,0));
+                            ch.pipeline().addLast(new ChannelDuplexHandler(){
+                                @Override
+                                public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+                                    IdleStateEvent event = (IdleStateEvent) evt;
+                                    if(event.state()== IdleState.READER_IDLE){
+                                        ctx.channel().close();
+                                        log.debug("关闭客户端");
+                                    }
+                                }
+                            });
                             ch.pipeline().addLast(RPC_HANDLER);
                         }
                     });
@@ -66,10 +84,5 @@ public class RpcServerManager {
             boss.shutdownGracefully();
             worker.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) {
-        RpcServerManager serverManager = new RpcServerManager("localhost", 8080);
-        serverManager.start();
     }
 }

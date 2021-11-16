@@ -12,7 +12,7 @@ import static top.jiakaic.protocol.ProxyClient.getProxyService;
 public class RpcClientTest {
     public static void main(String[] args) {
         HelloService service = getProxyService(HelloService.class);
-        String 张三 = service.sayHello("张三");
-        System.out.println(张三+"!!!!!!");
+        String res = service.sayHello("，佳凯进阿里和腾讯");
+        System.out.println(res+"!!!!!!");
     }
 }
