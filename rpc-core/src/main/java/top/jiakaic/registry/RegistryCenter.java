@@ -5,7 +5,7 @@ import java.net.InetSocketAddress;
 /**
  * @author JK
  * @date 2021/11/15 -20:35
- * @Description
+ * @Description  服务注册中心规范
  **/
 public interface RegistryCenter {
     /**

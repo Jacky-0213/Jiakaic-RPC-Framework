@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author JK
  * @date 2021/11/15 -20:37
- * @Description
+ * @Description  服务注册中心的Zookeeper实现
  **/
 @Slf4j
 public class ZookeeperRegistryCenter implements RegistryCenter {

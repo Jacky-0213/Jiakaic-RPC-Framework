@@ -5,7 +5,7 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 /**
  * @author JK
  * @date 2021/11/8 -14:49
- * @Description
+ * @Description 粘包半包处理器
  **/
 public class ProtocolFrameDecoder extends LengthFieldBasedFrameDecoder {
     public ProtocolFrameDecoder() {

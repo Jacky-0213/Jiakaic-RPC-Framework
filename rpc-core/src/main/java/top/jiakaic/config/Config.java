@@ -1,9 +1,7 @@
 package top.jiakaic.config;
 
-
 import top.jiakaic.loadBalance.LoadBalanceAlgorithm;
 import top.jiakaic.protocol.Serializer;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

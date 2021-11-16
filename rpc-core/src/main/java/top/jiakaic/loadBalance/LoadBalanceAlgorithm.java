@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * @author JK
  * @date 2021/11/16 -8:46
- * @Description
+ * @Description 负载均衡算法
  **/
 public enum LoadBalanceAlgorithm implements LoadBalance {
 

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author JK
  * @date 2021/11/16 -10:10
- * @Description
+ * @Description  启动类包扫描注解，默认扫描启动类所在路径上层目录及其以下子目录所有服务
  **/
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

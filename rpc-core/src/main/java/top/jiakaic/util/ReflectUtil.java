@@ -15,7 +15,7 @@ import java.util.jar.JarFile;
 /**
  * @author JK
  * @date 2021/11/16 -9:46
- * @Description
+ * @Description 能够通过具体包路径，加载出对应的类并返回所有服务实现的集合的工具类
  **/
 public class ReflectUtil {
 
@@ -23,7 +23,11 @@ public class ReflectUtil {
         StackTraceElement[] stack = new Throwable().getStackTrace();
         return stack[stack.length - 1].getClassName();
     }
-
+    /**
+     * @Author:JK
+     * @Description:  通过具体的路径获取路径下的服务实现
+     *
+     */
     public static Set<Class<?>> getClasses(String packageName) {
         Set<Class<?>> classes = new LinkedHashSet<>();
         boolean recursive = true;

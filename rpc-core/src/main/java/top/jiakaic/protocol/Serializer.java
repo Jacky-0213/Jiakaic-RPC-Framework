@@ -1,7 +1,6 @@
 package top.jiakaic.protocol;
 
 import com.google.gson.*;
-
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;

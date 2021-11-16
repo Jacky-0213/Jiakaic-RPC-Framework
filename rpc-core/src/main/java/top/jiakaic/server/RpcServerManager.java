@@ -46,14 +46,21 @@ public class RpcServerManager {
         scanServices();
     }
 
-//    public void publishService(String serviceName,String serviceInstance) {
-//        registry.putService(serviceName,serviceInstance);
-//        registryCenter.register(serviceName, new InetSocketAddress(host, port));
-//    }
+    /**
+     * @Author:JK
+     * @Description:  服务发布
+     *
+     */
     public <T> void publishService(T service, String serviceName){
         registry.putService(service, serviceName);
         registryCenter.register(serviceName, new InetSocketAddress(host, port));
     }
+
+    /**
+     * @Author:JK
+     * @Description:  服务自动注册功能
+     *
+     */
     public void scanServices() {
         String mainClassName = ReflectUtil.getStackTrace();
         Class<?> startClass;
@@ -94,7 +101,11 @@ public class RpcServerManager {
             }
         }
     }
-
+    /**
+     * @Author:JK
+     * @Description: 开启服务器，初始化服务器相关设置
+     *
+     */
     public void start() {
         NioEventLoopGroup boss = new NioEventLoopGroup();
         NioEventLoopGroup worker = new NioEventLoopGroup();
