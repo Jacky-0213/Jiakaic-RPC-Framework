@@ -44,17 +44,18 @@ public interface Serializer {
             @Override
             public <T> T deserializer(Class<T> clazz, byte[] bytes) {
                 String json = new String(bytes, StandardCharsets.UTF_8);
-                return new GsonBuilder().registerTypeAdapter(Class.class,new ClassCodec()).create().fromJson(json, clazz);
+                return new GsonBuilder().registerTypeAdapter(Class.class, new ClassCodec()).create().fromJson(json, clazz);
             }
 
             @Override
             public <T> byte[] serializer(T obj) {
-                String json = new GsonBuilder().registerTypeAdapter(Class.class,new ClassCodec()).create().toJson(obj);
+                String json = new GsonBuilder().registerTypeAdapter(Class.class, new ClassCodec()).create().toJson(obj);
                 return json.getBytes(StandardCharsets.UTF_8);
             }
         }
     }
-    static class ClassCodec implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
+
+    class ClassCodec implements JsonSerializer<Class<?>>, JsonDeserializer<Class<?>> {
 
         @Override
         public Class<?> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

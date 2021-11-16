@@ -32,10 +32,8 @@ public class ProxyClient {
     public static <T> T getProxyService(Class<T> serviceClass) {
         String proxyWay = Config.getProxyWay();
         if ("cglib".equals(proxyWay)) {
-//            System.out.println("cglib阿");
             return getProxyServiceByCglib(serviceClass);
         } else {
-//            System.out.println("jdk阿");
             return getProxyServiceByJdk(serviceClass);
         }
     }
@@ -90,5 +88,4 @@ public class ProxyClient {
         System.out.println(t);
         return t;
     }
-
 }
