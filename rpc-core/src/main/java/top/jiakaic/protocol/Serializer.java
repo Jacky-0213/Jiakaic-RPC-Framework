@@ -1,5 +1,8 @@
 package top.jiakaic.protocol;
 
+import com.dyuproject.protostuff.LinkedBuffer;
+import com.dyuproject.protostuff.ProtostuffIOUtil;
+import com.dyuproject.protostuff.runtime.RuntimeSchema;
 import com.google.gson.*;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -50,6 +53,41 @@ public interface Serializer {
             public <T> byte[] serializer(T obj) {
                 String json = new GsonBuilder().registerTypeAdapter(Class.class, new ClassCodec()).create().toJson(obj);
                 return json.getBytes(StandardCharsets.UTF_8);
+            }
+        },
+        Protobuf{
+            @Override
+            public <T> T deserializer(Class<T> clazz, byte[] source) {
+                RuntimeSchema<T> schema;
+                T newInstance;
+                try {
+                    schema = RuntimeSchema.createFrom(clazz);
+                    newInstance = clazz.newInstance();
+                    ProtostuffIOUtil.mergeFrom(source, newInstance, schema);
+                } catch (Exception e) {
+                    throw new RuntimeException("反序列化异常");
+                }
+
+                return newInstance;
+            }
+
+            @Override
+            public <T> byte[] serializer(T source) {
+                RuntimeSchema<T> schema;
+                LinkedBuffer buffer = null;
+                byte[] result;
+                try {
+                    schema = RuntimeSchema.createFrom((Class<T>) source.getClass());
+                    buffer = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
+                    result = ProtostuffIOUtil.toByteArray(source, schema, buffer);
+                } catch (Exception e) {
+                    throw new RuntimeException("序列化异常");
+                } finally {
+                    if (buffer != null) {
+                        buffer.clear();
+                    }
+                }
+                return result;
             }
         }
     }
